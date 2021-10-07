@@ -44,7 +44,7 @@ jobs:
       - run:
           name: Docker upload
           command: |
-            dockerpath="yassminabubakr/capstone_helloworld_2"
+            dockerpath="yassminabubakr/capstone_helloworld"
             docker login --username=yassminabubakr --password=$DOCKER_PASSWORD &&\
                 docker image tag capstone_helloworld $dockerpath
             docker image push $dockerpath
@@ -98,38 +98,35 @@ jobs:
       - checkout
       - aws-eks/update-kubeconfig-with-authenticator:
           cluster-name: << parameters.cluster-name >>
-          #aws-region: << parameters.region >>
           install-kubectl: true
       - kubernetes/create-or-update-resource:
          resource-file-path: "deployments/nginx-deployment/deployment.yaml"
          resource-name: "deployment/nginx-deployment"
          get-rollout-status: true
          show-kubectl-command: true
-      # - kubernetes/create-or-update-resource:
-      #    resource-file-path: "deployments/nginx-deployment/deployment2.yaml"
+      - kubernetes/create-or-update-resource:
+         resource-file-path: "deployments/nginx-deployment/deployment2.yaml"
 
-  
-
-  
-  # undeploy-application:
-  #   executor: aws-eks/python3
-  #   parameters:
-  #     cluster-name:
-  #       description: |
-  #         Name of the EKS cluster
-  #       type: string""
-  #   steps:
-  #     - aws-eks/update-kubeconfig-with-authenticator:
-  #         cluster-name: << parameters.cluster-name >>
-  #         install-kubectl: true
-  #     - kubernetes/delete-resource:
-  #         resource-types: "deployment,service"
-  #         label-selector: "nginx-deployment"
-  #         wait: true
-  #     - run:
-  #         name: Check on pod status
-  #         command: |
-  #           kubectl get pods
+  undeploy-application:
+    executor: aws-eks/python3
+    parameters:
+      cluster-name:
+        description: |
+          Name of the EKS cluster
+        type: string
+    steps:
+      - checkout
+      - aws-eks/update-kubeconfig-with-authenticator:
+          cluster-name: << parameters.cluster-name >>
+          install-kubectl: true
+      - kubernetes/delete-resource:
+          resource-types: "deployment,service"
+          label-selector: "nginx-deployment"
+          wait: true
+      - run:
+          name: Check on pod status
+          command: |
+            kubectl get pods
   
   # delete-cluster:
   #   executor: aws-eks/python3
@@ -162,20 +159,17 @@ workflows:
     jobs:
       - build
       - Docker
-      # - create-cluster
-      # - test-cluster:
-      #     cluster-name: my-eks-nginxhelloworld
-      #     requires:
-      #       - create-cluster
-      # - create-deployment:
-      #     # name: create-deployment-kubectl
-      #     #region: "us-east-1"
-      #     cluster-name: my-eks-nginxhelloworld
-      #     requires:
-      #       - create-cluster
+      - create-cluster
+      - test-cluster:
+          cluster-name: my-eks-nginxhelloworld
+          requires:
+            - create-cluster
+      - create-deployment:
+          cluster-name: my-eks-nginxhelloworld
+          requires:
+            - create-cluster
       # - undeploy-application:
       #      cluster-name: my-eks-nginxhelloworld
-      #    #  aws-region: "us-east-2"
       #      requires:
       #        - create-deployment
       # - delete-cluster:

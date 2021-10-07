@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: nginx-deployment
-        image: yassminabubakr/capstone_helloworld2
+        image: yassminabubakr/capstone_helloworld_2
         ports:
         - containerPort: 80
