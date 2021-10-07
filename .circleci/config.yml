@@ -52,24 +52,24 @@ jobs:
   create-cluster:
     executor: aws-eks/python3
     steps:
-      - run:
-          command: |
-            if which eksctl > /dev/null; then
-              echo "eksctl is already installed"
-              exit 0
-            fi
-            mkdir -p eksctl_download
-            curl --silent --location --retry 5 "https://github.com/weaveworks/eksctl/releases/download/0.20.0/eksctl_Linux_amd64.tar.gz" \
-              | tar xz -C eksctl_download
-            chmod +x eksctl_download/eksctl
-            SUDO=""
-            if [ $(id -u) -ne 0 ] && which sudo > /dev/null ; then
-              SUDO="sudo"
-            fi
-            $SUDO mv eksctl_download/eksctl /usr/local/bin/
-            rmdir eksctl_download
+      # - run:
+      #     command: |
+      #       if which eksctl > /dev/null; then
+      #         echo "eksctl is already installed"
+      #         exit 0
+      #       fi
+      #       mkdir -p eksctl_download
+      #       curl --silent --location --retry 5 "https://github.com/weaveworks/eksctl/releases/download/0.20.0/eksctl_Linux_amd64.tar.gz" \
+      #         | tar xz -C eksctl_download
+      #       chmod +x eksctl_download/eksctl
+      #       SUDO=""
+      #       if [ $(id -u) -ne 0 ] && which sudo > /dev/null ; then
+      #         SUDO="sudo"
+      #       fi
+      #       $SUDO mv eksctl_download/eksctl /usr/local/bin/
+      #       rmdir eksctl_download
       - aws-eks/create-cluster:
-          cluster-name: my-eks-demo
+          cluster-name: my-eks-NginxHelloWorld
 
   test-cluster:
     executor: aws-eks/python3
@@ -168,7 +168,7 @@ workflows:
       - Docker
       - create-cluster
       - test-cluster:
-          cluster-name: my-demo
+          cluster-name: my-eks-NginxHelloWorld
           requires:
             - create-cluster
       # - create-deployment:
