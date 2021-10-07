@@ -87,6 +87,27 @@ jobs:
             kubectl get services
           name: Test cluster
 
+  create-deployment:
+    executor: aws-eks/python3
+    parameters:
+      cluster-name:
+        description: |
+          Name of the EKS cluster
+        type: string
+    steps:
+      - checkout
+      - aws-eks/update-kubeconfig-with-authenticator:
+          cluster-name: << parameters.cluster-name >>
+          #aws-region: << parameters.region >>
+          install-kubectl: true
+      - kubernetes/create-or-update-resource:
+         resource-file-path: "deployments/nginx-deployment/deployment.yaml"
+         resource-name: "deployment/nginx-deployment"
+         get-rollout-status: true
+         show-kubectl-command: true
+      # - kubernetes/create-or-update-resource:
+      #    resource-file-path: "deployments/nginx-deployment/deployment2.yaml"
+
   # delete-cluster:
   #   executor: aws-eks/python3
   #   steps:
@@ -109,32 +130,7 @@ jobs:
   #     - aws-eks/delete-cluster:
   #         cluster-name: my-eks-demo
 
-  # create-deployment:
-  #   parameters:
-  #     executor:
-  #       type: executor
-  #     region:
-  #       type: string
-  #       default: ""
-  #     cluster-name:
-  #       description: |
-  #         Name of the EKS cluster
-  #       type: string
-  #   executor: aws-eks/python3
-  #   steps:
-  #     - checkout
-  #     - aws-eks/update-kubeconfig-with-authenticator:
-  #         cluster-name: << parameters.cluster-name >>
-  #         aws-region: << parameters.region >>
-  #         install-kubectl: true
-  #     - kubernetes/create-or-update-resource:
-  #        resource-file-path: "tests/nginx-deployment/deployment.yaml"
-  #        resource-name: "deployment/nginx-deployment"
-  #        get-rollout-status: true
-  #        show-kubectl-command: true
-  #     - kubernetes/create-or-update-resource:
-  #        resource-file-path: "tests/nginx-deployment/deployment2.yaml"
-
+  
   # undeploy-application:
   #   executor: aws-eks/python3
   #   parameters:
@@ -171,13 +167,12 @@ workflows:
           cluster-name: my-eks-nginxhelloworld
           requires:
             - create-cluster
-      # - create-deployment:
-      #     name: create-deployment-kubectl
-      #     executor: aws-eks/python
-      #     region: "us-east-2"
-      #     cluster-name: my-demo
-      #     requires:
-      #       - create-cluster
+      - create-deployment:
+          name: create-deployment-kubectl
+          #region: "us-east-1"
+          cluster-name: my-eks-nginxhelloworld
+          requires:
+            - create-cluster
       # - undeploy-application:
       #      cluster-name: my-demo
       #      aws-region: "us-east-2"
