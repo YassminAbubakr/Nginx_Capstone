@@ -44,7 +44,7 @@ jobs:
       - run:
           name: Docker upload
           command: |
-            dockerpath="yassminabubakr/capstone_helloworld"
+            dockerpath="yassminabubakr/capstone_helloworld_2"
             docker login --username=yassminabubakr --password=$DOCKER_PASSWORD &&\
                 docker image tag capstone_helloworld $dockerpath
             docker image push $dockerpath
@@ -162,17 +162,17 @@ workflows:
     jobs:
       - build
       - Docker
-      - create-cluster
-      - test-cluster:
-          cluster-name: my-eks-nginxhelloworld
-          requires:
-            - create-cluster
-      - create-deployment:
-          # name: create-deployment-kubectl
-          #region: "us-east-1"
-          cluster-name: my-eks-nginxhelloworld
-          requires:
-            - create-cluster
+      # - create-cluster
+      # - test-cluster:
+      #     cluster-name: my-eks-nginxhelloworld
+      #     requires:
+      #       - create-cluster
+      # - create-deployment:
+      #     # name: create-deployment-kubectl
+      #     #region: "us-east-1"
+      #     cluster-name: my-eks-nginxhelloworld
+      #     requires:
+      #       - create-cluster
       # - undeploy-application:
       #      cluster-name: my-eks-nginxhelloworld
       #    #  aws-region: "us-east-2"
