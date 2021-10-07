@@ -133,6 +133,11 @@ jobs:
   
   # delete-cluster:
   #   executor: aws-eks/python3
+  #   parameters:
+  #   cluster-name:
+  #     description: |
+  #       Name of the EKS cluster
+  #     type: string
   #   steps:
   #     - run:
   #         command: |
@@ -151,7 +156,7 @@ jobs:
   #           $SUDO mv eksctl_download/eksctl /usr/local/bin/
   #           rmdir eksctl_download
   #     - aws-eks/delete-cluster:
-  #         cluster-name: my-eks-nginxhelloworld
+  #         cluster-name: << parameters.cluster-name >>
 workflows:
   default:
     jobs:
@@ -174,6 +179,7 @@ workflows:
       #      requires:
       #        - create-deployment
       # - delete-cluster:
-      #      requires:
-      #        - undeploy-application
+      #     cluster-name: my-eks-nginxhelloworld
+      #     requires:
+      #       - undeploy-application
 
