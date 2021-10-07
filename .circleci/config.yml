@@ -69,7 +69,7 @@ jobs:
             $SUDO mv eksctl_download/eksctl /usr/local/bin/
             rmdir eksctl_download
       - aws-eks/create-cluster:
-          cluster-name: my-eks-NginxHelloWorld
+          cluster-name: my-eks-nginxhelloworld
 
   test-cluster:
     executor: aws-eks/python3
@@ -168,7 +168,7 @@ workflows:
       - Docker
       - create-cluster
       - test-cluster:
-          cluster-name: my-eks-NginxHelloWorld
+          cluster-name: my-eks-nginxhelloworld
           requires:
             - create-cluster
       # - create-deployment:
