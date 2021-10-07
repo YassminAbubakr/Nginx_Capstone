@@ -48,44 +48,44 @@ jobs:
             docker login --username=yassminabubakr --password=$DOCKER_PASSWORD &&\
                 docker image tag capstone_helloworld $dockerpath
             docker image push $dockerpath
+    
+  create-cluster:
+    executor: aws-eks/python3
+    steps:
+      - run:
+          command: |
+            if which eksctl > /dev/null; then
+              echo "eksctl is already installed"
+              exit 0
+            fi
+            mkdir -p eksctl_download
+            curl --silent --location --retry 5 "https://github.com/weaveworks/eksctl/releases/download/0.20.0/eksctl_Linux_amd64.tar.gz" \
+              | tar xz -C eksctl_download
+            chmod +x eksctl_download/eksctl
+            SUDO=""
+            if [ $(id -u) -ne 0 ] && which sudo > /dev/null ; then
+              SUDO="sudo"
+            fi
+            $SUDO mv eksctl_download/eksctl /usr/local/bin/
+            rmdir eksctl_download
+      - aws-eks/create-cluster:
+          cluster-name: my-eks-demo
 
-  # test-cluster:
-  #   executor: aws-eks/python3
-  #   parameters:
-  #     cluster-name:
-  #       description: |
-  #         Name of the EKS cluster
-  #       type: string
-  #   steps:
-  #     - kubernetes/install
-  #     - aws-eks/update-kubeconfig-with-authenticator:
-  #         cluster-name: << parameters.cluster-name >>
-  #     - run:
-  #         command: |
-  #           kubectl get services
-  #         name: Test cluster
-  
-  # create-cluster:
-  #   executor: aws-eks/python3
-  #   steps:
-  #     - run:
-  #         command: |
-  #           if which eksctl > /dev/null; then
-  #             echo "eksctl is already installed"
-  #             exit 0
-  #           fi
-  #           mkdir -p eksctl_download
-  #           curl --silent --location --retry 5 "https://github.com/weaveworks/eksctl/releases/download/0.20.0/eksctl_Linux_amd64.tar.gz" \
-  #             | tar xz -C eksctl_download
-  #           chmod +x eksctl_download/eksctl
-  #           SUDO=""
-  #           if [ $(id -u) -ne 0 ] && which sudo > /dev/null ; then
-  #             SUDO="sudo"
-  #           fi
-  #           $SUDO mv eksctl_download/eksctl /usr/local/bin/
-  #           rmdir eksctl_download
-  #     - aws-eks/create-cluster:
-  #         cluster-name: my-eks-demo
+  test-cluster:
+    executor: aws-eks/python3
+    parameters:
+      cluster-name:
+        description: |
+          Name of the EKS cluster
+        type: string
+    steps:
+      - kubernetes/install
+      - aws-eks/update-kubeconfig-with-authenticator:
+          cluster-name: << parameters.cluster-name >>
+      - run:
+          command: |
+            kubectl get services
+          name: Test cluster
 
   # delete-cluster:
   #   executor: aws-eks/python3
@@ -166,11 +166,11 @@ workflows:
     jobs:
       - build
       - Docker
-      # - create-cluster
-      # - test-cluster:
-      #     cluster-name: my-demo
-      #     requires:
-      #       - create-cluster
+      - create-cluster
+      - test-cluster:
+          cluster-name: my-demo
+          requires:
+            - create-cluster
       # - create-deployment:
       #     name: create-deployment-kubectl
       #     executor: aws-eks/python
