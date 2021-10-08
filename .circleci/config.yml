@@ -204,16 +204,16 @@ workflows:
           cluster-name: my-eks-nginxhelloworld
           requires:
             - create-deployment
-      - update-deployment:
-          cluster-name: my-eks-nginxhelloworld
-          requires:
-            - create-deployment
-      - undeploy-application:
-          cluster-name: my-eks-nginxhelloworld
-          requires:
-            - update-deployment
-      - delete-cluster:
-          cluster-name: my-eks-nginxhelloworld
-          requires:
-            - undeploy-application
+      # - update-deployment:
+      #     cluster-name: my-eks-nginxhelloworld
+      #     requires:
+      #       - create-deployment
+      # - undeploy-application:
+      #     cluster-name: my-eks-nginxhelloworld
+      #     requires:
+      #       - update-deployment
+      # - delete-cluster:
+      #     cluster-name: my-eks-nginxhelloworld
+      #     requires:
+      #       - undeploy-application
 
