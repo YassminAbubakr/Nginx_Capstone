@@ -165,10 +165,10 @@ jobs:
   delete-cluster:
     executor: aws-eks/python3
     parameters:
-    cluster-name:
-      description: |
-        Name of the EKS cluster
-      type: string
+      cluster-name:
+        description: |
+          Name of the EKS cluster
+        type: string
     steps:
       - aws-eks/delete-cluster:
           cluster-name: << parameters.cluster-name >>
