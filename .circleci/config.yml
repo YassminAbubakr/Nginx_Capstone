@@ -172,6 +172,7 @@ jobs:
     steps:
       - aws-eks/delete-cluster:
           cluster-name: << parameters.cluster-name >>
+
 workflows:
   default:
     jobs:
@@ -191,9 +192,9 @@ workflows:
           requires:
             - create-deployment
       - undeploy-application:
-           cluster-name: my-eks-nginxhelloworld
-           requires:
-             - update-deployment
+          cluster-name: my-eks-nginxhelloworld
+          requires:
+            - update-deployment
       - delete-cluster:
           cluster-name: my-eks-nginxhelloworld
           requires:
