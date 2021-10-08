@@ -186,10 +186,6 @@ workflows:
       - build
       - Docker
       - create-cluster
-      - test-cluster:
-          cluster-name: my-eks-nginxhelloworld
-          requires:
-            - create-cluster
       - create-deployment:
           cluster-name: my-eks-nginxhelloworld
           requires:
