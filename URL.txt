@@ -1,0 +1,3 @@
+GitHub :  https://github.com/YassminAbubakr/Nginx_Capstone
+CircleCi : https://app.circleci.com/pipelines/github/YassminAbubakr/Nginx_Capstone
+LoadBalancer Url : a73e2715f7de343c1870325fafeb777f-1697769630.us-east-1.elb.amazonaws.com
