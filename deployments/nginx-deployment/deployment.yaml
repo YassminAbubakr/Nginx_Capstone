@@ -1,7 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx-deployment
+spec:
+  type: LoadBalancer
+  selector:
+    app: nginx-deployment
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+---
 apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
 kind: Deployment
 metadata:
   name: nginx-deployment
+  labels:
+    app: nginx-deployment
+  namespace: default  
 spec:
   selector:
     matchLabels:
@@ -17,3 +35,8 @@ spec:
         image: yassminabubakr/capstone_helloworld
         ports:
         - containerPort: 80
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
