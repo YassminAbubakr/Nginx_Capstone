@@ -185,19 +185,19 @@ workflows:
     jobs:
       - build
       - Docker
-      - create-cluster
-      - create-deployment:
-          cluster-name: my-eks-nginxhelloworld
-          requires:
-            - create-cluster
+      #- create-cluster
+      # - create-deployment:
+      #     cluster-name: my-eks-nginxhelloworld
+      #     requires:
+      #       - create-cluster
       - create_test:
           cluster-name: my-eks-nginxhelloworld
-          requires:
-            - create-cluster
-      - update_deployment:
-          cluster-name: my-eks-nginxhelloworld
-          requires:
-            - create-deployment
+          # requires:
+          #   - create-deployment
+      # - update_deployment:
+      #     cluster-name: my-eks-nginxhelloworld
+      #     requires:
+      #       - create-deployment
       # - undeploy-application:
       #      cluster-name: my-eks-nginxhelloworld
       #      requires:
