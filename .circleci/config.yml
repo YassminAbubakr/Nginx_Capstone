@@ -125,9 +125,9 @@ jobs:
           cluster-name: << parameters.cluster-name >>
           install-kubectl: true
       - run:
-        name: Get Old Nodes
-        command: |
-          kubectl get nodes
+          name: Get Old Nodes
+          command: |
+            kubectl get nodes
       - kubernetes/create-or-update-resource:
           resource-file-path: "deployments/nginx-deployment/deployment2.yaml"
           resource-name: "deployment/nginx-deployment"
